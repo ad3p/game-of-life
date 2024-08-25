@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>
+            Experimental - Game of Life
+        </title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="title" content="version 1.0 | Conway's Game of Life, visualized"/>
+        <meta name="description" content="version 1 of Conway's Game of life. Made using html, css and javascript."/>
+
+        <link rel="icon" href="../icons/favicon.ico"/>
+
+        <link rel="stylesheet" href="../style/styleExp.css">
+
+        <script>
+        // v1.1 script
+
+        // B - each cell state container
+        var B  = [];
+        var Bn = [];
+        var alive = 0;
+
+        var isPlay = false;
+
+        var d = 28; // dimension of cell
+        var p = 2;
+        var ph = 2;
+
+        // sleep function
+        function sleep(time) {
+            return new Promise((resolve) => setTimeout(resolve, time));
+            
+        }
+        
+        // create cells initially, gives out B and Bn
+        function createV01(){
+            var w = window.innerWidth;
+            var h = window.innerHeight;
+            // each cell height-width is d, -2 for taking padding in account
+            var n = w/d-p;
+            var m = h/d-ph;
+
+            // run for m rows n columns
+            for (var i=0;i<m;i++){
+                B[i]  = [];
+                Bn[i] = [];
+                for(var j=0;j<n;j++){
+
+                    var x = Math.random()*10;
+
+                    // condition to increase/decrease the live to dead ratio, ~ x>3 suitable
+                    if(x > 4){
+                        // alive cess
+                        B[i][j] = 1;
+                        alive += 1;
+                        Bn[i][j] = 3;
+                    }else{
+                        // dead cell
+                        B[i][j] = 0;
+                        Bn[i][j] = 8;
+                    }
+                }
+            }
+            
+            // after generating B and Bn, run genV01
+            genV01(Bn);
+        }
+
+        // for generating next iteration conditions, takes B as input
+        function runV01(){
+            var w = window.innerWidth;
+            var h = window.innerHeight;
+            var n = w/d-p;
+            var m = h/d-ph;
+            
+            // Bn stores each cell surrounding condition
+            var Bn =[];
+            
+            // run for m rows and n columns
+            for(var i=0;i<m;i++){
+                // generate a empty row matrix
+                Bn[i] = [];
+                for(var j=0;j<n;j++){ 
+                    var sum = 0;
+
+                    // for summing surrounding cells
+                    for(var si=i-1;si<=i+1;si++){
+                        for(var sj=j-1;sj<=j+1;sj++){
+                            // checker for excluding out of canvas cells
+                            if(si >-1 && sj > -1 && si<m && sj<n){
+                                sum += B[si][sj];
+                            }else{
+                                sum += 0;
+                            }  
+                        }
+                    }
+                    // minus its own value
+                    Bn[i][j] = sum - B[i][j];
+                }
+            }
+            // console.log(B);
+            // console.log(Bn);
+
+            // after generating Bn, run genV01
+            genV01(Bn);
+        
+            
+        }
+
+
+        // to generate cells, take Bn and B as inputs.
+        function genV01(Bn){
+            // get windows height and width to generate appropriate number of cells
+            var w = window.innerWidth;
+            var h = window.innerHeight;
+            // each cell height-width is 24, -2 for taking padding in account
+            var n = w/d-p;
+            var m = h/d-ph;
+
+            alive = 0;
+
+            var canvas = document.getElementById("paper");
+            // clear canvas for next iteration
+            canvas.innerHTML = " ";
+            var toAdd = document.createDocumentFragment();
+
+            // run for m rows and n columns
+            for (var i=0;i<m;i++){
+                for(var j=0;j<n;j++){
+                    var newB = document.createElement('button');
+                    newB.id = 'b'+i+j;
+
+                    // check condition for alive
+                    if(B[i][j] == 1 && Bn[i][j] == 3){
+                        newB.className = 'box0 boxX';
+                        newB.innerHTML = ".";
+                        B[i][j] = 1;   
+                        alive += 1;       
+                    }else if(B[i][j] == 0 && Bn[i][j] == 3){
+                        newB.className = 'box0a boxX';
+                        newB.innerHTML = ".";
+                        B[i][j] = 1;   
+                        alive += 1; 
+                    }else if(B[i][j] == 1 && Bn[i][j] == 2){
+                        newB.className = 'box0 boxX';
+                        newB.innerHTML = ".";
+                        B[i][j] = 1;
+                        alive += 1;
+                    }else{
+                        if(B[i][j]==1){
+                        newB.className = 'box1a boxX';
+
+
+                        }else{
+                        newB.className = 'box1 boxX';
+                        }
+                        newB.innerHTML = ".";
+                        B[i][j] = 0;
+                    }
+                    
+                    toAdd.appendChild(newB);
+                }
+                // after each row
+                canvas.appendChild(toAdd);
+                canvas.innerHTML += '<br/>';
+            }
+            // console.log(Math.ceil(m) + " :"  + Math.ceil(n)); 
+            var tCell = document.getElementById("total-cell").innerHTML = ( Math.ceil(m) * Math.ceil(n) ); 
+            var aCell = document.getElementById("alive-cell").innerHTML = alive;       
+      
+
+        }
+        // genV01 close
+
+        // play pause button
+        async function playV02(){
+            isPlay = true;
+            while(isPlay){
+                runV01();
+                await sleep(1200);
+
+            } 
+        }
+
+        function pauseV02(){
+            isPlay = false;
+        }
+        
+        
+        </script>
+        <style>            
+            /* alive cell */
+            .box0{
+                background-color: #ffffff;
+                color: white;
+
+                /* animation: dTOa 2s ease forwards; */
+                /* border:0px; */
+            }
+            .box0a{
+                /* background-color: rgb(243, 243, 243); */
+                color: white;
+
+                animation: dTOa 1s ease-out forwards;
+                /* border:0px; */
+            }
+            /* dead cell */
+            .box1{
+                background-color: rgb(31, 31, 31);
+                color: rgb(48, 48, 48);
+                /* border: 0px; */
+            }
+
+            .box1a{
+                /* background-color: rgb(31, 31, 31); */
+                color: rgb(48, 48, 48);
+                /* border: 0px; */
+                animation: aTOd 0.8s ease-in-out forwards;
+
+            }
+            .boxX{
+                height: 28px;
+                width : 28px;
+                border: 1px solid #272727;
+                margin: none;
+                
+                /* padding: none; */
+            }
+            #main{
+                display: flex;
+                flex-direction: row;
+                justify-content: center;
+                align-items: center;
+                margin-top: auto;
+                margin-bottom: auto;
+                /* width: 450px !important; */
+                /* overflow: hidden !important; */
+                
+            }
+/* 
+            #paper{
+                /* width: 600px; */
+                /* overflow:hidden; */
+            /* } */ 
+
+            @keyframes dTOa {
+                /* from { background-color: rgb(0, 0, 0); } */
+                00%  { background-color: rgb(31, 31, 31); color: rgb(31, 31, 31); }
+
+                100%  { background-color: #ffffff; color: #ffffff; }
+            }
+
+            @keyframes aTOd {
+                /* from { background-color: rgb(0, 0, 0); } */
+                0%  { background-color: #ffffff; color: #ffffff; }
+                100%  { background-color: rgb(31, 31, 31); color: rgb(31, 31, 31); }
+
+               
+            }
+                        
+        </style>
+    </head>
+    <body>
+        <div id="header-nav">
+            <div class="header-bar">
+                <span class="pills"><a href="../index.html">home</a>  &#187; <span>Experimental</span></span>
+                <span class="pills">Total cells: <span id="total-cell"> </span> | Alive cells: <span id="alive-cell" style="color: #00ff00;"> </span></span>
+
+                
+                <div class="button-bar">
+                    <span><button id="create" class="playBtn" onclick="createV01()">create</button>
+                    <button id="run" class="playBtn" onclick="playV02()">play</button>
+                    <button id="run" class="playBtn" onclick="pauseV02()">pause</button></span>
+
+                </div>
+            </div>
+            <!-- header bar -->
+        </div>
+        <!-- header nav -->
+        <div id="main">
+            <div id="paper">
+                <div class="instruction"> 
+                    <H2>How to RUN: </H2>
+                    <ul>
+                        <li>
+                            Click on <b>CREATE</b> button to create cells
+                        </li>
+                        <li>
+                            Then click on <b>RUN</b> button to simulate the cells. 
+                        </li>
+                        <li>
+                            You can also press <b>SPACE BAR</b> or <b>ENTER</b> key after step 2 to run.
+                        </li>
+                        <li>If you change the windows size during RUN, and cells get disorganized, click on CREATE button again.</li>
+                    </ul>
+
+                </div>
+                <!-- instruction -->
+            </div>
+            <!-- paper -->
+        </div>
+        <!-- main -->
+        <script>createV01();</script>
+    
+    </body>
+</html>

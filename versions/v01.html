@@ -1,0 +1,214 @@
+<html>
+    <head>
+        <title>
+            Version 1.0 - Game of Life
+        </title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="title" content="version 1.0 | Conway's Game of Life, visualized"/>
+        <meta name="description" content="version 1 of Conway's Game of life. Made using html, css and javascript."/>
+
+        <link rel="icon" href="../icons/favicon.ico"/>
+
+        <link rel="stylesheet" href="../style/style.css">
+
+        <script>
+            // v1.0 script, cluttered af
+
+        // B - each box state container
+        var B = [];
+        
+        // var zn=5;
+        
+        function createV01(){
+            var w = window.innerWidth;
+            var h = window.innerHeight;
+            // 24 is the width of each box
+            var n = w/24-2;
+            var m = h/24-2;
+            
+            // var n = zn;
+            // var m = zn;
+            var canvas = document.getElementById("paper");
+            // clear canvas for new iteration
+            canvas.innerHTML = " ";
+            var toAdd = document.createDocumentFragment();
+            for (var i=0;i<m;i++){
+                B[i] = [];
+                for(var j=0;j<n;j++){
+                    var newB = document.createElement('button');
+                    newB.id = 'b'+i+j;
+                    var x = Math.random()*10;
+                    // condition to increase/decrease the live to dead ratio, ~ x>3 suitable
+                    // alive cell
+                    if(x > 4){
+                        newB.className = 'box0';
+                        newB.innerHTML = "o";
+                        // newB.style.width = 24;
+                        // console.log(newB.innerWidth);
+                        B[i][j] = 1;
+                    }else{
+                        // dead cell
+                        newB.className = 'box1';
+                        newB.innerHTML = "0";
+                        B[i][j] = 0;
+                    }
+                    toAdd.appendChild(newB);
+                }
+                canvas.appendChild(toAdd);
+                canvas.innerHTML += '<br/>';
+            }
+            // console.log(B);
+        }
+        // console.log(B);
+
+        function runV01(){
+            var w = window.innerWidth;
+            var h = window.innerHeight;
+            var n = w/24-2;
+            var m = h/24-2;
+            // var n = zn;
+            // var m = zn;
+            // Bn - each cell surrounding conditions
+            var Bn =[];
+            for(var i=0;i<m;i++){
+                Bn[i] = [];
+                for(var j=0;j<n;j++){ 
+                    var sum = 0;
+                    for(var si=i-1;si<=i+1;si++){
+                        for(var sj=j-1;sj<=j+1;sj++){
+                            // checker
+                            if(si >-1 && sj > -1 && si<m && sj<n){
+                                // console.log(i+"-"+j+" : " + si + " " + sj);
+                                // console.log(si)
+                                sum += B[si][sj];
+                            }else{
+                                sum += 0;
+                            }
+                            
+                        }
+                        
+                    }
+                    // minus its own value
+                    Bn[i][j] = sum - B[i][j];
+                }
+                
+            }
+            // redundant code, can be clubbed with createV01
+            var canvas = document.getElementById("paper");
+            canvas.innerHTML = " ";
+            var toAdd = document.createDocumentFragment();
+            for (var i=0;i<m;i++){
+                for(var j=0;j<n;j++){
+                    var newB = document.createElement('button');
+                    newB.id = 'b'+i+j;
+            //         var x = Math.random()*10;
+                        
+            //             // newB.style.width = 24;
+            //             // console.log(newB.innerWidth);
+            //             B[i][j] = 1;
+                    if(Bn[i][j] == 3){
+                        newB.className = 'box0';
+                        newB.innerHTML = "o";
+                        B[i][j] = 1;
+            //             // newB.style.width = 24;
+            //             // console.log(newB.innerWidth);
+            //             B[i][j] = 1;
+                    }else if(B[i][j] == 1 && Bn[i][j] == 2){
+                        newB.className = 'box0';
+                        newB.innerHTML = "o";
+                        B[i][j] = 1;
+
+                    }else{
+                        newB.className = 'box1';
+                        newB.innerHTML = "0";
+                        B[i][j] = 0;
+
+                    }
+                    //else{
+            //             newB.className = 'box1';
+            //             newB.innerHTML = "0";
+            //             B[i][j] = 0;
+            //         }
+                    toAdd.appendChild(newB);
+                }
+                canvas.appendChild(toAdd);
+                canvas.innerHTML += '<br/>';
+            }
+            // for(var i=0;i<m;i++){
+            //     for(var j=0;j++;j<n){
+
+            //     }
+            // }
+            // console.log(Bn); 
+
+
+            
+        }
+
+        
+        </script>
+        <style>
+            /* alive cell */
+            .box0{
+                background-color: rgb(255, 255, 255);
+                /* border:0px; */
+            }
+            /* dead cell */
+            .box1{
+                background-color: rgb(48, 48, 48);
+                /* border: 0px; */
+            }
+            #main{
+                display: flex;
+                flex-direction: row;
+                justify-content: center;
+                align-items: center;
+                margin-top: 20px;
+                margin-bottom: auto;
+                
+            }
+
+            #paper{
+                padding: 10px;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="header-nav">
+            <div class="header-bar">
+                <span class="pills"><a href="../index.html">home</a>  &#187; <span>v01</span></span>
+                <div class="button-bar">
+                    <span><button id="create" class="playBtn" onclick="createV01()"> create</button>
+                    <button id="run" class="playBtn" onclick="runV01()"> run</button></span>
+                </div>
+            </div>
+            <!-- header bar -->
+        </div>
+        <!-- header nav -->
+        <div id="main">
+            <div id="paper">
+                <div class="instruction"> 
+                    <H2>How to RUN: </H2>
+                    <ul>
+                        <li>
+                            Click on <b>CREATE</b> button to create cells
+                        </li>
+                        <li>
+                            Then click on <b>RUN</b> button to simulate the cells. 
+                        </li>
+                        <li>
+                            You can also press <b>SPACE BAR</b> or <b>ENTER</b> key after step 2 to run.
+                        </li>
+                        <li>If you change the windows size during RUN, and cells get disorganized, click on CREATE button again.</li>
+                    </ul>
+
+                </div>
+                <!-- instruction -->
+            </div>
+            <!-- paper -->
+        </div>
+        <!-- main -->
+
+    
+    </body>
+</html>
