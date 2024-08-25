@@ -1,0 +1,1 @@
+See [Conway's Game of Life](https://gol-adep.netlify.app/).
