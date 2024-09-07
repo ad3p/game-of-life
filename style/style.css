@@ -22,15 +22,11 @@
 body{
     min-height: -webkit-fill-available;
     background-color: var(--caret-color-1);
-    /* background-color: rgb(167, 74, 74); */
     margin: 2px;
     display: flex;
     flex-direction: column;
     color: var(--text-color-light);
     animation: fadeIn 1.5s ease;
-
-  
-
 }
 
 
@@ -41,6 +37,7 @@ div#header-nav > div.header-bar > span.pills
 #header-nav{
     overflow: hidden;
 }
+
 .header-bar{
     /* overflow: hidden; */
     background: var(--caret-color-1);
@@ -61,20 +58,54 @@ div#header-nav > div.header-bar > span.pills
     padding: 9px 15px;
     font-size:1rem;
 }
+
 a{
     text-decoration: underline;
     color: var(--caret-color-2);
 }
+
 .playBtn{
-    /* float: inline-end; */
     color: var(--text-color-light);
     background-color: var(--caret-color-2);
     border: 2px solid var(--caret-color-2);
     border-radius:12px;
-    /* box-shadow: 2px 2px rgb(205, 205, 205); */
     padding: 7px 15px;
     font-size: 1rem;
+}
 
+/* sandbox menu options */
+#sideMenu{
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 0;
+    background-color: #252525;
+    position:fixed;
+    z-index: 1;
+    top: 0;
+    right: 0;
+    overflow: hidden;
+    opacity: 0.95;
+    transition: 0.5s;
+
+}
+
+.sideMenuContent{
+    padding: 30px;
+}
+
+input[type="range"]{
+    width: 80%;
+    accent-color: var(--caret-color-2);
+}
+
+.cellSelect{
+    display: flex;
+    color: rgb(156, 156, 156);
+    font-size: 20px;
+    flex-direction: row;
+    justify-content: space-evenly;
+    /* background-color: #000000; */
 }
 
 
@@ -86,19 +117,24 @@ a{
 
 
 @media all and (max-width: 600px) {
+
+    .header-bar{
+        justify-content: flex-start;
+    }
+
     .pills{
         font-size: 1rem;
         padding: 2px 15px;
-
-        
+        display: flex;
+        flex-direction: column;        
     }
 
     .playBtn{
-        font-size: 1.5rem;
+        font-size: 1.2rem;
         /* padding: 30px; */
         margin: 0.5rem 0.2rem;
         /* margin-left: 0.2rem; */
-        /* padding:10px; */
+        padding:7px 15px;
     }
 
     .button-bar{
@@ -106,16 +142,19 @@ a{
         position: fixed;
         bottom: 0;
         display: flex;
-        flex-direction: column;
+        flex-direction: row;
         justify-content: center;
         align-items: center;
         /* padding: 2rem; */
         /* padding: 10px; */
         width: 98%; 
-
+        font-size: 20px;
         /* margin-top: auto; */
-
      } 
+     
+     .notInMobile{
+        display: none;
+     }
   }
 
 
